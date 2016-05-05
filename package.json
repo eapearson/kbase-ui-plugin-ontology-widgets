@@ -1,0 +1,11 @@
+{
+  "name": "kbase-ui-plugin-sample-data-widget",
+  "version": "0.0.1",
+  "description": "New data widgets for KBase",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "KBase",
+  "license": "SEE LICENSE IN LICENSE.md"
+}

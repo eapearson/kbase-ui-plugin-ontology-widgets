@@ -1,0 +1,35 @@
+{
+    "name": "kbase-ui-plugin-sample-data-widget",
+    "description": "New data view widgets developed for the KBase UI",
+    "author": [
+        "kbase"
+    ],
+    "keywords": [
+        "kbase",
+        "widget",
+        "data"
+    ],
+    "moduleType": "kbase-ui-plugin",
+    "main": "src/plugin/config.yml",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/kbase/kbase-ui-plugin-datawidgets"
+    },
+    "dependencies": {
+        "jquery": "^2.1.0",
+        "bluebird": "^3.0.0",
+        "bootstrap": "^3.3.0",
+        "datatables": "^1.10.9",
+        "datatables-bootstrap3-plugin": "^0.4.0",
+        "numeral": "^1.5.0",
+        "kbase-common-js": "^1.0.0",
+        "kbase-ui-widget": "^1.0.0",
+        "kbase-service-clients-js": "^1.0.0"
+    },
+    "devDependencies": {
+    },
+    "ignore": [
+        ".gitignore"
+    ],
+    "license": "SEE LICENSE IN LICENSE.md"
+}

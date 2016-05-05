@@ -1,0 +1,110 @@
+## Ontology Widgets
+---
+package:
+    name: ontology-widgets
+    description: Data widget samples
+    author: Erik Pearson
+source:
+    modules: []
+install:
+    widgets:
+        # PANELS
+        - 
+            module: dictionary-panel
+            id: ontology_dictionary_panel
+            type: factory
+        - 
+            module: translation-panel
+            id: ontology_translation_panel
+            type: factory
+        -
+            module: widgets/kbaseOntologyDictionary
+            id: ontologyDictionary
+            type: kbwidget
+            config:
+                jqueryName: kbaseOntologyDictionary
+        -
+            module: widgets/kbaseOntologyTranslation
+            id: ontologyTranslation
+            type: kbwidget
+            config:
+                jqueryName: kbaseOntologyTranslation
+        
+            
+    # Set up a route to install that widget in the main body view
+    routes:
+        -
+            path:
+                -
+                    ontology-dictionary
+                -
+                    type: param
+                    name: workspaceId
+                -
+                    type: param
+                    name: objectId
+                -
+                    type: param
+                    name: objectVersion
+            widget: ontology_dictionary_panel
+        -
+            path:
+                -
+                    ontology-translation
+                -
+                    type: param
+                    name: workspaceId
+                -
+                    type: param
+                    name: objectId
+                -
+                    type: param
+                    name: objectVersion
+            widget: ontology_translation_panel
+    # Set up a menu item to invoke the path above
+    menu:
+        -
+            name: ontologyWidgetDictionary
+            definition:
+                # NB: this path only works in CI as long as this Narrative stays up.
+                path: ontology-dictionary/6306/12/2
+                label: Sample - Ontology Dictionary
+                icon: smile-o
+        -
+            name: ontologyWidgetTranslation
+            definition:
+                # NB: this path only works in CI as long as this Narrative stays up.
+                path: ontology-translation/6306/6/2
+                label: Sample - Ontology Translation
+                icon: smile-o
+    types:
+        -
+            type:
+                module: KBaseOntology
+                name: OntologyDictionary
+                version: any
+            icon: 
+                type: fontAwesome
+                classes: ['fa-file']
+            viewers:
+                -
+                    title: Data View - Ontology Dictionary
+                    default: true
+                    panel: true  
+                    widget: 
+                        name: ontologyDictionary
+        -
+            type:
+                module: KBaseOntology
+                name: OntologyTranslation
+                version: any
+            icon: 
+                type: fontAwesome
+                classes: ['fa-file']
+            viewers:
+                -
+                    title: Data View - Ontology Translation
+                    default: true
+                    panel: true  
+                    widget: 
+                        name: ontologyTranslation
