@@ -21,6 +21,15 @@ make start
 make preview
 ```
 
+### Fetch the plugin
+
+From within the dev directory (the one containing kbase-ui)
+
+```
+git clone https://github.com/eapearson/kbase-ui-plugin-ontology-widgets
+```
+
+
 ### Integrate Plugin
 
 Within the kbase-ui directory:
@@ -30,11 +39,12 @@ Within the kbase-ui directory:
 cp -pr config dev/config
 ```
 - edit  dev/config/link.sh to create a link to the my-plugin repo.
-  - in the EXTERNAL PLUGINS section, uncomment the two example lines
-```
-# rm -rf ../../build/build/client/modules/plugins/PLUGIN
-# ln -s /DEVDIR/kbase-ui-plugin-PLUGIN/src/plugin ../../build/build/client/modules/plugins/PLUGIN
-```
+    - in the EXTERNAL PLUGINS section, uncomment the two example lines
+
+    ```
+    # rm -rf ../../build/build/client/modules/plugins/PLUGIN
+    # ln -s /DEVDIR/kbase-ui-plugin-PLUGIN/src/plugin ../../build/build/client/modules/plugins/PLUGIN
+    ```
   - replace PLUGIN with ontology-widgets, and DEVDIR with the absolute path to the directory in which the plugin repo was cloned
 
 - edit dev/config/ui/dev/build.yml

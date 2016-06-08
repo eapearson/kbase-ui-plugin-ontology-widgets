@@ -1,5 +1,5 @@
 {
-    "name": "kbase-ui-plugin-sample-data-widget",
+    "name": "kbase-ui-plugin-ontology-widgets",
     "description": "New data view widgets developed for the KBase UI",
     "author": [
         "kbase"
