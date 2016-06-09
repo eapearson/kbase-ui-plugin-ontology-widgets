@@ -14,8 +14,8 @@ define([
         parent: "kbaseAuthenticatedWidget",
         version: "1.0.0",
         options: {
-            object_name: 'gene_ontology', //'plant_ontology', 'ncbi_taxon_ontology', 'gene_ontology'
-            workspace_name: 'KBaseOntology'
+            //object_name: 'gene_ontology', //'plant_ontology', 'ncbi_taxon_ontology', 'gene_ontology'
+            //workspace_name: 'KBaseOntology'
         },
         extractLink: function (text) {
             if (text === undefined) {
@@ -69,13 +69,13 @@ define([
                     '/treat_xrefs_as_differentia', '/treat_xrefs_as_is_a', '/ontology',
                     '/term_hash/*/id',
                     '/term_hash/*/name',
-                    '/term_hash/*/namespace'
+                    '/term_hash/*/namespace',
 //                '/term_hash/*/def',
 //                '/term_hash/*/synonym',
 //                '/term_hash/*/xref',
 //                '/term_hash/*/namespace',
 //                '/term_hash/*/relationship',
-//                '/typedef_hash/',
+                '/typedef_hash/',
                 ]
             };
 
@@ -146,7 +146,7 @@ define([
 
                             typedef_data.push(
                                 [
-                                    v.name,
+                                    v.name || '',
                                     $subtable.$elem.html()
                                 ]
                                 );
@@ -176,7 +176,7 @@ define([
                                     //[v.name, $.isArray(v.synonym) ? v.synonym.join('<br>') : v.synonym, v.def].join('<br>')
                                     v.name,
                                     //[v.name, v.id, v.def, v.synonym, v.xref, v.namespace, v.relationship].join(',')
-                                    v.name
+                                    [v.id, v.name, v.namespace].join(',')
                                 ]
                                 );
                         }
@@ -223,6 +223,13 @@ define([
 
                         }
                     );
+
+                    var m;
+
+                    if (m = location.href.match(/term_id=([^&]+)/)) {
+                      $self.appendTerm(m[1]);
+                    }
+
 
                     $self.data('loaderElem').hide();
                     $self.data('globalContainerElem').show();
@@ -402,10 +409,11 @@ define([
                 $self.data('loaderElem').show();
 
                 var dictionary_params = {
-                    workspace: this.options.workspace_name,
-                    name: this.options.object_name,
+                    wsid: this.options.workspaceId,
+                    objid: this.options.objectId,
                     included: [
                         '/term_hash/' + term_id + '/*'
+                        //'/term_hash/'
                     ]
                 };
 
@@ -417,6 +425,7 @@ define([
 
                         $self.data('loaderElem').hide();
                         $termElem.empty();
+
                         $self.reallyAppendTerm(term);
 
                     })
@@ -468,22 +477,22 @@ define([
 
                 /*  var closure_data = [];
                  var term_headers = [];
-                 
+
                  $.each(
                  Object.keys(term.relationship_closure).sort(),
                  function (i, k) {
-                 
+
                  closure_headers.push({'title' : k});
-                 
+
                  var v = term.relationship_closure[k];
-                 
+
                  $.each(
                  v,
                  function (i, elem) {
-                 
+
                  }
                  )
-                 
+
                  table_data.push(
                  [
                  v,
@@ -494,7 +503,7 @@ define([
                  )
                  }
                  );
-                 
+
                  var $dt = $self.data('tableElem').DataTable({
                  columns : [
                  { title : 'Term ID', 'class' : 'ontology-top'},
@@ -502,21 +511,21 @@ define([
                  { title : 'Search field', 'visible' : false }
                  ],
                  createdRow : function(row, data, index) {
-                 
+
                  var $linkCell = $('td', row).eq(0);
                  $linkCell.empty();
-                 
+
                  $linkCell.append( $self.termLink(data[0]) )
-                 
+
                  var $nameCell = $('td', row).eq(1);
-                 
+
                  var color = $self.colorMap[data[0].namespace];
                  if (color === undefined) {
                  color = $self.colorMap[data[0].namespace] = $self.colors.shift();
                  }
-                 
+
                  $nameCell.css('color', color)
-                 
+
                  }
                  });*/
 

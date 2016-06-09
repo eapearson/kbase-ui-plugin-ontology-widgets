@@ -14,8 +14,8 @@ define([
         parent: "kbaseAuthenticatedWidget",
         version: "1.0.0",
         options: {
-            object_name: 'interpro2go',
-            workspace_name: 'KBaseOntology'
+            //object_name: 'interpro2go',
+            //workspace_name: 'KBaseOntology'
         },
         init: function init(options) {
             this._super(options);
@@ -30,8 +30,10 @@ define([
             });
 
             var dictionary_params = {
-                workspace: this.options.workspace_name,
-                name: this.options.object_name
+                //workspace: this.options.workspace_name,
+                //name: this.options.object_name
+                wsid: this.options.workspaceId,
+                objid: this.options.objectId,
             };
 
             ws.get_objects([dictionary_params])
