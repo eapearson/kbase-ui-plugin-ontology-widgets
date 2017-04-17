@@ -1,18 +1,17 @@
-
 define([
     'jquery',
     '../colorbrewer/colorbrewer', // new dep
-    'kb/service/client/workspace',
+    'kb_service/client/workspace',
     'datatables_bootstrap',
-    'kb/widget/legacy/authenticatedWidget',
-    'kb/widget/legacy/kbaseTable'
-], function ($, colorbrewer, Workspace) {
+    'kb_widget/legacy/authenticatedWidget',
+    'kb_widget/legacy/kbaseTable'
+], function($, colorbrewer, Workspace) {
     'use strict';
 
     $.KBWidget({
-        name: "kbaseOntologyTranslation",
-        parent: "kbaseAuthenticatedWidget",
-        version: "1.0.0",
+        name: 'kbaseOntologyTranslation',
+        parent: 'kbaseAuthenticatedWidget',
+        version: '1.0.0',
         options: {
             object_name: 'interpro2go',
             workspace_name: 'KBaseOntology'
@@ -35,7 +34,7 @@ define([
             };
 
             ws.get_objects([dictionary_params])
-                .then(function (data) {
+                .then(function(data) {
                     data = data[0].data;
 
                     var $metaElem = $self.data('metaElem');
@@ -46,7 +45,7 @@ define([
 
                     var $commentsTable;
                     data.comment.split(/\n/).forEach(
-                        function (v, i) {
+                        function(v, i) {
                             var tmp = v.split(/:/);
                             if (tmp.length > 2) {
                                 var tail = tmp.slice(1, tmp.length).join(':');
@@ -67,35 +66,30 @@ define([
                                 .append(comments['external resource']);
                         }
 
-                        $commentsTable = $.jqElem('div').kbaseTable(
-                            {
-                                allowNullRows: false,
-                                structure:
-                                    {
-                                        keys: Object.keys(comments).sort(),
-                                        rows: comments
-                                    }
-                            }
-                        );
-                    }
-                    console.log("COMMENTS", comments);
-                    var $metaTable = $.jqElem('div').kbaseTable(
-                        {
+                        $commentsTable = $.jqElem('div').kbaseTable({
                             allowNullRows: false,
                             structure: {
-                                keys: [
-                                    {value: 'ontology1', label: 'Ontology 1'},
-                                    {value: 'ontology2', label: 'Ontology 2'},
-                                    {value: 'comment', label: 'Comment'}
-                                ],
-                                rows: {
-                                    'ontology1': data.ontology1,
-                                    'ontology2': data.ontology2,
-                                    'comment': $commentsTable ? $commentsTable.$elem : data.comment
-                                }
+                                keys: Object.keys(comments).sort(),
+                                rows: comments
+                            }
+                        });
+                    }
+                    console.log('COMMENTS', comments);
+                    var $metaTable = $.jqElem('div').kbaseTable({
+                        allowNullRows: false,
+                        structure: {
+                            keys: [
+                                { value: 'ontology1', label: 'Ontology 1' },
+                                { value: 'ontology2', label: 'Ontology 2' },
+                                { value: 'comment', label: 'Comment' }
+                            ],
+                            rows: {
+                                'ontology1': data.ontology1,
+                                'ontology2': data.ontology2,
+                                'comment': $commentsTable ? $commentsTable.$elem : data.comment
                             }
                         }
-                    );
+                    });
 
                     $metaElem.append($metaTable.$elem);
 
@@ -103,18 +97,18 @@ define([
 
                     $.each(
                         Object.keys(data.translation).sort(),
-                        function (i, k) {
+                        function(i, k) {
                             var v = data.translation[k];
                             $.each(
                                 v.equiv_terms,
-                                function (j, e) {
+                                function(j, e) {
                                     table_data.push(
                                         [
                                             k,
                                             e.equiv_name,
                                             e.equiv_term
                                         ]
-                                        );
+                                    );
                                 }
                             );
                         }
@@ -122,11 +116,11 @@ define([
 
                     var $dt = $self.data('tableElem').DataTable({
                         columns: [
-                            {title: 'Term ID', 'class': 'ontology-top'},
-                            {title: 'Eqivalent Name'},
-                            {title: 'Eqivalent Term'}
+                            { title: 'Term ID', 'class': 'ontology-top' },
+                            { title: 'Eqivalent Name' },
+                            { title: 'Eqivalent Term' }
                         ],
-                        XXXcreatedRow: function (row, data, index) {
+                        XXXcreatedRow: function(row, data, index) {
 
                             var $linkCell = $('td', row).eq(0);
                             $linkCell.empty();
@@ -152,12 +146,12 @@ define([
                     $self.data('globalContainerElem').show();
 
                 })
-                .catch(function (d) {
+                .catch(function(d) {
 
                     $self.$elem.empty();
                     $self.$elem
                         .addClass('alert alert-danger')
-                        .html("Could not load object : " + d.error.message);
+                        .html('Could not load object : ' + d.error.message);
                 });
 
             this.appendUI(this.$elem);
@@ -170,8 +164,7 @@ define([
                 .css({
                     'width': '95%',
                     'padding-left': '10px'
-                })
-                ;
+                });
 
             $elem.append($.jqElem('style').text('.ontology-top { vertical-align : top }'));
 
@@ -184,8 +177,7 @@ define([
                     $.jqElem('div')
                     .attr('align', 'center')
                     .append($.jqElem('i').addClass('fa fa-spinner').addClass('fa fa-spin fa fa-4x'))
-                    )
-                ;
+                );
 
             $self.data('loaderElem', $loaderElem);
             $elem.append($loaderElem);
@@ -201,8 +193,7 @@ define([
             $globalContainer.append($metaContainerElem);
 
             var $tableElem = $.jqElem('table')
-                .addClass('display')
-                ;
+                .addClass('display');
 
             $self.data('tableElem', $tableElem);
             var $colorMapElem = $self.data('colorMapElem', $.jqElem('div'));
@@ -216,14 +207,14 @@ define([
             return $elem;
 
         },
-        createContainerElem: function (name, content, display) {
+        createContainerElem: function(name, content, display) {
 
             var $panelBody = $.jqElem('div')
                 .addClass('panel-body collapse in');
 
             $.each(
                 content,
-                function (i, v) {
+                function(i, v) {
                     $panelBody.append(v);
                 }
             );
@@ -234,7 +225,7 @@ define([
                 .append(
                     $.jqElem('div')
                     .addClass('panel-heading')
-                    .on('click', function (e) {
+                    .on('click', function(e) {
                         $(this).next().collapse('toggle');
                         $(this).find('i').toggleClass('fa-rotate-90');
 
@@ -246,14 +237,13 @@ define([
                             $.jqElem('i')
                             .addClass('fa fa-chevron-right fa-rotate-90')
                             .css('color', 'lightgray')
-                            )
-                        .append('&nbsp; ' + name)
                         )
+                        .append('&nbsp; ' + name)
                     )
+                )
                 .append(
                     $panelBody
-                    )
-                ;
+                );
 
             return $containerElem;
         }

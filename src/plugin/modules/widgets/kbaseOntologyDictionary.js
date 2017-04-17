@@ -1,42 +1,41 @@
-
 define([
     'jquery',
     '../colorbrewer/colorbrewer', // TODO: new dependency
-    'kb/service/client/workspace',
+    'kb_service/client/workspace',
     'datatables_bootstrap',
-    'kb/widget/legacy/authenticatedWidget',
-    'kb/widget/legacy/kbaseTable'
-], function ($, colorbrewer, Workspace) {
+    'kb_widget/legacy/authenticatedWidget',
+    'kb_widget/legacy/kbaseTable'
+], function($, colorbrewer, Workspace) {
     'use strict';
 
     $.KBWidget({
-        name: "kbaseOntologyDictionary",
-        parent: "kbaseAuthenticatedWidget",
-        version: "1.0.0",
+        name: 'kbaseOntologyDictionary',
+        parent: 'kbaseAuthenticatedWidget',
+        version: '1.0.0',
         options: {
             object_name: 'gene_ontology', //'plant_ontology', 'ncbi_taxon_ontology', 'gene_ontology'
             workspace_name: 'KBaseOntology'
         },
-        extractLink: function (text) {
+        extractLink: function(text) {
             if (text === undefined) {
                 return text;
             }
             var mappings = {
-                "(EC:([\\w.-]+))": "<a target = '_blank' href = 'http://enzyme.expasy.org/EC/$2'>$1</a>",
-                "(PMID:([\\w.-]+))": "<a target = '_blank' href = 'http://www.ncbi.nlm.nih.gov/pubmed/$2'>$1</a>",
-                "(GOC:([\\w.-]+))": "<a target = '_blank' href = 'http://www.geneontology.org/doc/GO.curator_dbxrefs'>$1</a>",
-                "(Wikipedia:([\\w.-]+))": "<a target = '_blank' href = 'https://en.wikipedia.org/wiki/$2'>$1</a>",
-                "(Reactome:([\\w.-]+))": "<a target = '_blank' href = 'http://www.reactome.org/content/query?q=$2'>$1</a>",
-                "(KEGG:([\\w.-]+))": "<a target = '_blank' href = 'http://www.genome.jp/dbget-bin/www_bget?rn:$2'>$1</a>",
-                "(RHEA:([\\w.-]+))": "<a target = '_blank' href = 'http://www.rhea-db.org/reaction?id=$2'>$1</a>",
-                "(MetaCyc:([\\w.-]+))": "<a target = '_blank' href = 'http://biocyc.org/META/NEW-IMAGE?type=NIL&object=$2'>$1</a>",
-                "(UM-BBD_reactionID:([\\w.-]+))": "<a target = '_blank' href = 'http://eawag-bbd.ethz.ch/servlets/pageservlet?ptype=r&reacID=$2'>$1</a>",
-                "(UM-BBD_enzymeID:([\\w.-]+))": "<a target = '_blank' href = 'http://eawag-bbd.ethz.ch/servlets/pageservlet?ptype=ep&enzymeID=$2'>$1</a>",
-                "(UM-BBD_pathwayID:([\\w.-]+))": "<a target = '_blank' href = 'http://eawag-bbd.ethz.ch/$2/$2_map.html'>$1</a>",
-                "(RESID:([\\w.-]+))": "<a target = '_blank' href = 'http://pir.georgetown.edu/cgi-bin/resid?id=$2'>$1</a>",
-                "(PO_GIT:([\\w.-]+))": "<a target = '_blank' href = 'https://github.com/Planteome/plant-ontology/issues/$2'>$1</a>",
-                "(TO_GIT:([\\w.-]+))": "<a target = '_blank' href = 'https://github.com/Planteome/plant-trait-ontology/issues/$2'>$1</a>",
-                "(GC_ID:([\\w.-]+))": "<a target = '_blank' href = 'http://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi#SG$2'>$1</a>"
+                '(EC:([\\w.-]+))': '<a target = \'_blank\' href = \'http://enzyme.expasy.org/EC/$2\'>$1</a>',
+                '(PMID:([\\w.-]+))': '<a target = \'_blank\' href = \'http://www.ncbi.nlm.nih.gov/pubmed/$2\'>$1</a>',
+                '(GOC:([\\w.-]+))': '<a target = \'_blank\' href = \'http://www.geneontology.org/doc/GO.curator_dbxrefs\'>$1</a>',
+                '(Wikipedia:([\\w.-]+))': '<a target = \'_blank\' href = \'https://en.wikipedia.org/wiki/$2\'>$1</a>',
+                '(Reactome:([\\w.-]+))': '<a target = \'_blank\' href = \'http://www.reactome.org/content/query?q=$2\'>$1</a>',
+                '(KEGG:([\\w.-]+))': '<a target = \'_blank\' href = \'http://www.genome.jp/dbget-bin/www_bget?rn:$2\'>$1</a>',
+                '(RHEA:([\\w.-]+))': '<a target = \'_blank\' href = \'http://www.rhea-db.org/reaction?id=$2\'>$1</a>',
+                '(MetaCyc:([\\w.-]+))': '<a target = \'_blank\' href = \'http://biocyc.org/META/NEW-IMAGE?type=NIL&object=$2\'>$1</a>',
+                '(UM-BBD_reactionID:([\\w.-]+))': '<a target = \'_blank\' href = \'http://eawag-bbd.ethz.ch/servlets/pageservlet?ptype=r&reacID=$2\'>$1</a>',
+                '(UM-BBD_enzymeID:([\\w.-]+))': '<a target = \'_blank\' href = \'http://eawag-bbd.ethz.ch/servlets/pageservlet?ptype=ep&enzymeID=$2\'>$1</a>',
+                '(UM-BBD_pathwayID:([\\w.-]+))': '<a target = \'_blank\' href = \'http://eawag-bbd.ethz.ch/$2/$2_map.html\'>$1</a>',
+                '(RESID:([\\w.-]+))': '<a target = \'_blank\' href = \'http://pir.georgetown.edu/cgi-bin/resid?id=$2\'>$1</a>',
+                '(PO_GIT:([\\w.-]+))': '<a target = \'_blank\' href = \'https://github.com/Planteome/plant-ontology/issues/$2\'>$1</a>',
+                '(TO_GIT:([\\w.-]+))': '<a target = \'_blank\' href = \'https://github.com/Planteome/plant-trait-ontology/issues/$2\'>$1</a>',
+                '(GC_ID:([\\w.-]+))': '<a target = \'_blank\' href = \'http://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi#SG$2\'>$1</a>'
             };
 
             for (var map in mappings) {
@@ -70,18 +69,18 @@ define([
                     '/term_hash/*/id',
                     '/term_hash/*/name',
                     '/term_hash/*/namespace'
-//                '/term_hash/*/def',
-//                '/term_hash/*/synonym',
-//                '/term_hash/*/xref',
-//                '/term_hash/*/namespace',
-//                '/term_hash/*/relationship',
-//                '/typedef_hash/',
+                    //                '/term_hash/*/def',
+                    //                '/term_hash/*/synonym',
+                    //                '/term_hash/*/xref',
+                    //                '/term_hash/*/namespace',
+                    //                '/term_hash/*/relationship',
+                    //                '/typedef_hash/',
                 ]
             };
 
             //$self.ws.get_objects([dictionary_params]).then(function(data) {
             $self.ws.get_object_subset([dictionary_params])
-                .then(function (data) {
+                .then(function(data) {
                     var data = data[0].data;
 
                     $self.dataset = data;
@@ -90,39 +89,37 @@ define([
 
                     $metaElem.empty();
 
-                    var $metaTable = $.jqElem('div').kbaseTable(
-                        {
-                            allowNullRows: false,
-                            structure: {
-                                keys: [
-                                    {value: 'format-version', label: 'Format version'},
-                                    {value: 'data-version', label: 'Data version'},
-                                    {value: 'date'},
-                                    {value: 'saved-by', label: 'Saved By'},
-                                    {value: 'auto-generated-by', label: 'Auto Generated By'},
-                                    {value: 'subsetdef'},
-                                    {value: 'synonymtypedef'},
-                                    {value: 'default-namespace', label: 'Default Namespace'},
-                                    {value: 'treat-xrefs-as-genus-differentia', label: 'Treat XREFs as genus differentia'},
-                                    {value: 'treat-xrefs-as-is_a', label: 'Treat XREFs as "is a"'},
-                                    {value: 'ontology', label: 'ontology'}
-                                ],
-                                rows: {
-                                    'format-version': data.format_version,
-                                    'data-version': data.data_version,
-                                    'date': data.date,
-                                    'saved-by': data.saved_by,
-                                    'auto-generated-by': data.auto_generated_by,
-                                    'subsetdef': $.isArray(data.subsetdef) ? data.subsetdef.join('<br>') : data.subsetdef,
-                                    'synonymtypedef': $.isArray(data.synonymtypedef) ? data.synonymtypedef.join('<br>') : data.synonymtypedef,
-                                    'default-namespace': data.default_namespace,
-                                    'treat-xrefs-as-genus-differentials': $.isArray(data.treat_xrefs_as_differentia) ? data.treat_xrefs_as_differentia.join('<br>') : data.treat_xrefs_as_differentia,
-                                    'treat-xrefs-as-is_a': $.isArray(data.treat_xrefs_as_is_a) ? data.treat_xrefs_as_is_a.join('<br>') : data.treat_xrefs_as_is_a,
-                                    'ontology': data.ontology
-                                }
+                    var $metaTable = $.jqElem('div').kbaseTable({
+                        allowNullRows: false,
+                        structure: {
+                            keys: [
+                                { value: 'format-version', label: 'Format version' },
+                                { value: 'data-version', label: 'Data version' },
+                                { value: 'date' },
+                                { value: 'saved-by', label: 'Saved By' },
+                                { value: 'auto-generated-by', label: 'Auto Generated By' },
+                                { value: 'subsetdef' },
+                                { value: 'synonymtypedef' },
+                                { value: 'default-namespace', label: 'Default Namespace' },
+                                { value: 'treat-xrefs-as-genus-differentia', label: 'Treat XREFs as genus differentia' },
+                                { value: 'treat-xrefs-as-is_a', label: 'Treat XREFs as "is a"' },
+                                { value: 'ontology', label: 'ontology' }
+                            ],
+                            rows: {
+                                'format-version': data.format_version,
+                                'data-version': data.data_version,
+                                'date': data.date,
+                                'saved-by': data.saved_by,
+                                'auto-generated-by': data.auto_generated_by,
+                                'subsetdef': $.isArray(data.subsetdef) ? data.subsetdef.join('<br>') : data.subsetdef,
+                                'synonymtypedef': $.isArray(data.synonymtypedef) ? data.synonymtypedef.join('<br>') : data.synonymtypedef,
+                                'default-namespace': data.default_namespace,
+                                'treat-xrefs-as-genus-differentials': $.isArray(data.treat_xrefs_as_differentia) ? data.treat_xrefs_as_differentia.join('<br>') : data.treat_xrefs_as_differentia,
+                                'treat-xrefs-as-is_a': $.isArray(data.treat_xrefs_as_is_a) ? data.treat_xrefs_as_is_a.join('<br>') : data.treat_xrefs_as_is_a,
+                                'ontology': data.ontology
                             }
                         }
-                    );
+                    });
 
                     $metaElem.append($metaTable.$elem);
 
@@ -130,26 +127,24 @@ define([
                     var typedef_data = [];
                     $.each(
                         data.typedef_hash || {},
-                        function (k, v) {
+                        function(k, v) {
 
-                            var $subtable = $.jqElem('div').kbaseTable(
-                                {
-                                    structure: {
-                                        keys: Object.keys(v).sort().map(function (v) {
-                                            return {value: v, label: v, style: 'width : 200px'};
-                                        }),
-                                        rows: v
-                                    },
-                                    striped: false
-                                }
-                            );
+                            var $subtable = $.jqElem('div').kbaseTable({
+                                structure: {
+                                    keys: Object.keys(v).sort().map(function(v) {
+                                        return { value: v, label: v, style: 'width : 200px' };
+                                    }),
+                                    rows: v
+                                },
+                                striped: false
+                            });
 
                             typedef_data.push(
                                 [
                                     v.name,
                                     $subtable.$elem.html()
                                 ]
-                                );
+                            );
 
                         }
                     );
@@ -157,8 +152,8 @@ define([
 
                     var $tt = $typeDefElem.DataTable({
                         columns: [
-                            {title: 'TypeDef', 'class': 'ontology-top'},
-                            {title: 'Info'}
+                            { title: 'TypeDef', 'class': 'ontology-top' },
+                            { title: 'Info' }
                         ]
                     });
 
@@ -168,7 +163,7 @@ define([
 
                     $.each(
                         data.term_hash,
-                        function (k, v) {
+                        function(k, v) {
 
                             table_data.push(
                                 [
@@ -178,17 +173,17 @@ define([
                                     //[v.name, v.id, v.def, v.synonym, v.xref, v.namespace, v.relationship].join(',')
                                     v.name
                                 ]
-                                );
+                            );
                         }
                     );
 
                     var $dt = $self.data('tableElem').DataTable({
                         columns: [
-                            {title: 'Term ID', 'class': 'ontology-top'},
-                            {title: 'Term name'},
-                            {title: 'Search field', 'visible': false}
+                            { title: 'Term ID', 'class': 'ontology-top' },
+                            { title: 'Term name' },
+                            { title: 'Search field', 'visible': false }
                         ],
-                        createdRow: function (row, data, index) {
+                        createdRow: function(row, data, index) {
 
                             var $linkCell = $('td', row).eq(0);
                             $linkCell.empty();
@@ -213,13 +208,13 @@ define([
 
                     $.each(
                         $self.colorMap,
-                        function (k, v) {
+                        function(k, v) {
                             $self.data('colorMapElem').append(
                                 $.jqElem('span')
                                 .css('padding-left', '25px')
                                 .css('color', v)
                                 .append(k)
-                                );
+                            );
 
                         }
                     );
@@ -228,35 +223,35 @@ define([
                     $self.data('globalContainerElem').show();
 
                 })
-                .catch(function (d) {
+                .catch(function(d) {
                     $self.$elem.empty();
                     $self.$elem
                         .addClass('alert alert-danger')
-                        .html("Could not load object : " + d.error.message);
+                        .html('Could not load object : ' + d.error.message);
                 });
 
             this.appendUI(this.$elem);
             return this;
         },
-        termLink: function (term, withName) {
+        termLink: function(term, withName) {
             var $self = this;
             return $.jqElem('a')
                 .append(term.id + (withName ? ' [' + term.name + ']' : ''))
-                .on('click', function (e) {
+                .on('click', function(e) {
                     e.preventDefault();
                     $self.appendTerm(term.id);
                 });
         },
-        getTerm: function (term_id) {
+        getTerm: function(term_id) {
             return this.dataset.term_hash[term_id];
         },
-        parseISA: function (isa) {
+        parseISA: function(isa) {
 
             var ids = [];
 
             $.each(
                 isa,
-                function (i, v) {
+                function(i, v) {
                     var parts = v.split(/\s*!\s*/);
                     ids.push(parts[0]);
                 }
@@ -264,7 +259,7 @@ define([
 
             return ids;
         },
-        getLineage: function (term_id, recursive, circular_breaker) {
+        getLineage: function(term_id, recursive, circular_breaker) {
 
             var $self = this;
 
@@ -284,7 +279,7 @@ define([
             if (term.is_a) {
                 $.each(
                     this.parseISA(term.is_a),
-                    function (i, v) {
+                    function(i, v) {
                         parents[v] = undefined;
                     }
                 );
@@ -294,7 +289,7 @@ define([
 
             $.each(
                 parents,
-                function (k, v) {
+                function(k, v) {
                     parents[k] = $self.getLineage(k, true, circular_breaker);
                 }
             );
@@ -306,7 +301,7 @@ define([
             return parents;
 
         },
-        buildLineageElem: function (lineage) {
+        buildLineageElem: function(lineage) {
 
             if (!lineage) {
                 return '';
@@ -318,11 +313,11 @@ define([
                 .css('padding-left', '10px')
                 .css('list-style-position', 'inside')
                 //.css('list-style-type', 'none')
-                ;
+            ;
 
-            var ret = {root: $ul, parent: $ul};
+            var ret = { root: $ul, parent: $ul };
 
-            $.each(lineage, function (k, v) {
+            $.each(lineage, function(k, v) {
                 //if ($li.html().length) {
                 //  $li.append(',')
                 //}
@@ -338,7 +333,7 @@ define([
                     $.jqElem('span')
                     .css('color', $self.colorMap[term.namespace])
                     .append(term.name)
-                    );
+                );
 
                 if (v !== undefined) {
                     ret = $self.buildLineageElem(v);
@@ -350,7 +345,7 @@ define([
             return ret;
 
         },
-        lineageAsNodes: function (parent, lineage, nodes, edges, cache, depth) {
+        lineageAsNodes: function(parent, lineage, nodes, edges, cache, depth) {
             var $self = this;
             if (nodes === undefined) {
                 nodes = [];
@@ -367,23 +362,23 @@ define([
             }
 
             if (cache[parent] === undefined) {
-                nodes.push({node: parent, tag: parent, color: $self.colorMap[$self.getTerm(parent).namespace]});
+                nodes.push({ node: parent, tag: parent, color: $self.colorMap[$self.getTerm(parent).namespace] });
                 cache[parent] = nodes.length - 1;
             }
-            $.each(lineage, function (k, v) {
+            $.each(lineage, function(k, v) {
                 if (cache[k] === undefined) {
-                    nodes.push({name: k, tag: k, color: $self.colorMap[$self.getTerm(k).namespace]});
+                    nodes.push({ name: k, tag: k, color: $self.colorMap[$self.getTerm(k).namespace] });
                     cache[k] = nodes.length - 1;
                 }
 
-                edges.push({source: cache[parent], target: cache[k], charge: -100 * depth});
+                edges.push({ source: cache[parent], target: cache[k], charge: -100 * depth });
                 if (v !== undefined) {
                     $self.lineageAsNodes(k, v, nodes, edges, cache, depth + 1);
                 }
             });
-            return {nodes: nodes, edges: edges};
+            return { nodes: nodes, edges: edges };
         },
-        appendTerm: function (term_id) {
+        appendTerm: function(term_id) {
             var $self = this;
 
             var $termElem = $self.data('termElem');
@@ -410,7 +405,7 @@ define([
                 };
 
                 $self.ws.get_object_subset([dictionary_params])
-                    .then(function (data) {
+                    .then(function(data) {
                         var term = data[0].data.term_hash[term_id];
 
                         $self.termCache[term_id] = term;
@@ -420,7 +415,7 @@ define([
                         $self.reallyAppendTerm(term);
 
                     })
-                    .catch(function (d) {
+                    .catch(function(d) {
                         console.error(d);
                         var message;
                         if (d.message) {
@@ -431,14 +426,14 @@ define([
                         $self.$elem.empty();
                         $self.$elem
                             .addClass('alert alert-danger')
-                            .html("Could not load object : " + message);
+                            .html('Could not load object : ' + message);
                     });
 
             } else {
                 $self.reallyAppendTerm($self.termCache[term_id]);
             }
         },
-        reallyAppendTerm: function (term) {
+        reallyAppendTerm: function(term) {
             var $self = this;
 
             var $termElem = $self.data('termElem');
@@ -454,12 +449,10 @@ define([
                 var dataset = $self.lineageAsNodes(term.id, lineage);
                 dataset.nodes[0].stroke = 'yellow';
 
-                $force = $.jqElem('div').css({width: '500px', height: '500px'}).kbaseForcedNetwork(
-                    {
-                        linkDistance: 150,
-                        dataset: dataset
-                    }
-                );
+                $force = $.jqElem('div').css({ width: '500px', height: '500px' }).kbaseForcedNetwork({
+                    linkDistance: 150,
+                    dataset: dataset
+                });
             }
 
             var $closureElem = undefined;
@@ -526,15 +519,14 @@ define([
                         .append(
                             $.jqElem('li')
                             .append(type + ' relationships')
-                            )
-                        ;
+                        );
 
                     var $subUL = $.jqElem('ul');
                     $closureElem.append($subUL);
 
                     $.each(
                         term.relationship_closure[type],
-                        function (i, elem) {
+                        function(i, elem) {
 
                             var term = $self.getTerm(elem[0]);
 
@@ -547,8 +539,8 @@ define([
                                     $.jqElem('span')
                                     .css('color', $self.colorMap[term.namespace])
                                     .append(term.name)
-                                    )
-                                );
+                                )
+                            );
                         });
 
                 }
@@ -559,7 +551,7 @@ define([
             if (term.relationship !== undefined) {
                 $.each(
                     term.relationship,
-                    function (i, rel) {
+                    function(i, rel) {
                         var parts = rel.split(/ ! /);
                         $self.extractLink(parts[0]);
                         $relationship
@@ -572,25 +564,23 @@ define([
                 );
             }
 
-            var $table = $.jqElem('div').kbaseTable(
-                {
-                    allowNullRows: false,
-                    structure: {
-                        keys: [{value: 'id', label: 'ID'}, 'name', 'def', 'namespace', 'synonym', 'comment', {value: 'is_a', label: 'Is A'}, 'relationship', 'xref'],
-                        rows: {
-                            id: term.id,
-                            name: term.name,
-                            def: $self.extractLink($.isArray(term.def) ? term.def.join('<br>') : term.def),
-                            namespace: term.namespace,
-                            synonym: $.isArray(term.synonym) ? term.synonym.join('<br>') : term.synonym,
-                            comment: term.comment,
-                            is_a: $closureElem ? $.jqElem('div').append($closureElem) : undefined, //$lineageElem.root, // or $force.$elem
-                            relationship: term.relationship ? $relationship : undefined,
-                            xref: $self.extractLink($.isArray(term.xref) ? term.xref.join('<br>') : term.xref)
-                        }
+            var $table = $.jqElem('div').kbaseTable({
+                allowNullRows: false,
+                structure: {
+                    keys: [{ value: 'id', label: 'ID' }, 'name', 'def', 'namespace', 'synonym', 'comment', { value: 'is_a', label: 'Is A' }, 'relationship', 'xref'],
+                    rows: {
+                        id: term.id,
+                        name: term.name,
+                        def: $self.extractLink($.isArray(term.def) ? term.def.join('<br>') : term.def),
+                        namespace: term.namespace,
+                        synonym: $.isArray(term.synonym) ? term.synonym.join('<br>') : term.synonym,
+                        comment: term.comment,
+                        is_a: $closureElem ? $.jqElem('div').append($closureElem) : undefined, //$lineageElem.root, // or $force.$elem
+                        relationship: term.relationship ? $relationship : undefined,
+                        xref: $self.extractLink($.isArray(term.xref) ? term.xref.join('<br>') : term.xref)
                     }
                 }
-            );
+            });
 
             $termElem.append($table.$elem);
 
@@ -601,8 +591,7 @@ define([
                 .css({
                     'width': '95%',
                     'padding-left': '10px'
-                })
-                ;
+                });
 
             $elem.append($.jqElem('style').text('.ontology-top { vertical-align : top }'));
 
@@ -615,8 +604,7 @@ define([
                     $.jqElem('div')
                     .attr('align', 'center')
                     .append($.jqElem('i').addClass('fa fa-spinner').addClass('fa fa-spin fa fa-4x'))
-                    )
-                ;
+                );
 
             $self.data('loaderElem', $loaderElem);
             $elem.append($loaderElem);
@@ -632,8 +620,7 @@ define([
             $globalContainer.append($metaContainerElem);
 
             var $tableElem = $.jqElem('table')
-                .addClass('display')
-                ;
+                .addClass('display');
 
             $self.data('tableElem', $tableElem);
             var $colorMapElem = $self.data('colorMapElem', $.jqElem('div'));
@@ -660,14 +647,14 @@ define([
             return $elem;
 
         },
-        createContainerElem: function (name, content, display) {
+        createContainerElem: function(name, content, display) {
 
             var $panelBody = $.jqElem('div')
                 .addClass('panel-body collapse in');
 
             $.each(
                 content,
-                function (i, v) {
+                function(i, v) {
                     $panelBody.append(v);
                 }
             );
@@ -678,7 +665,7 @@ define([
                 .append(
                     $.jqElem('div')
                     .addClass('panel-heading')
-                    .on('click', function (e) {
+                    .on('click', function(e) {
                         $(this).next().collapse('toggle');
                         $(this).find('i').toggleClass('fa-rotate-90');
 
@@ -690,14 +677,13 @@ define([
                             $.jqElem('i')
                             .addClass('fa fa-chevron-right fa-rotate-90')
                             .css('color', 'lightgray')
-                            )
-                        .append('&nbsp; ' + name)
                         )
+                        .append('&nbsp; ' + name)
                     )
+                )
                 .append(
                     $panelBody
-                    )
-                ;
+                );
 
             return $containerElem;
         }

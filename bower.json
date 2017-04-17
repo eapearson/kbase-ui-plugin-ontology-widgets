@@ -20,14 +20,13 @@
         "bluebird": "^3.0.0",
         "bootstrap": "^3.3.0",
         "datatables": "^1.10.9",
-        "datatables-bootstrap3-plugin": "^0.4.0",
-        "numeral": "^1.5.0",
-        "kbase-common-js": "^1.0.0",
+        "datatables-bootstrap3-plugin": "~1.0.0",
+        "numeral": "^2.0.0",
+        "kbase-common-js": "^2.5.0",
         "kbase-ui-widget": "^1.0.0",
-        "kbase-service-clients-js": "^1.0.0"
+        "kbase-service-clients-js": "^3.0.0"
     },
-    "devDependencies": {
-    },
+    "devDependencies": {},
     "ignore": [
         ".gitignore"
     ],
