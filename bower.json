@@ -13,7 +13,7 @@
     "main": "src/plugin/config.yml",
     "repository": {
         "type": "git",
-        "url": "git://github.com/kbase/kbase-ui-plugin-datawidgets"
+        "url": "git://github.com/thomasoniii/kbase-ui-plugin-ontology-widgets"
     },
     "dependencies": {
         "jquery": "^2.1.0",

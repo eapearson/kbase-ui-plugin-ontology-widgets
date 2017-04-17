@@ -13,11 +13,19 @@ define([
         parent: 'kbaseAuthenticatedWidget',
         version: '1.0.0',
         options: {
-            object_name: 'interpro2go',
-            workspace_name: 'KBaseOntology'
+            //object_name: 'interpro2go',
+            //workspace_name: 'KBaseOntology'
         },
         init: function init(options) {
             this._super(options);
+
+            this.wsKey = this.options.wsNameOrId.match(/^\d+/) ?
+                'wsid' :
+                'workspace';
+
+            this.objKey = this.options.objNameOrId.match(/^\d+/) ?
+                'objid' :
+                'name';
 
             this.colors = colorbrewer.Set2[8];
             this.colorMap = {};
@@ -28,10 +36,9 @@ define([
                 token: this.runtime.service('session').getAuthToken()
             });
 
-            var dictionary_params = {
-                workspace: this.options.workspace_name,
-                name: this.options.object_name
-            };
+            var dictionary_params = {};
+            dictionary_params[this.wsKey] = this.options.wsNameOrId;
+            dictionary_params[this.objKey] = this.options.objNameOrId;
 
             ws.get_objects([dictionary_params])
                 .then(function(data) {
@@ -74,7 +81,18 @@ define([
                             }
                         });
                     }
-                    console.log('COMMENTS', comments);
+
+                    var dict_links = {
+                        'ncbi': 'KBaseOntology/1',
+                        'po': 'KBaseOntology/2',
+                        'go': 'KBaseOntology/3',
+                        'toy': 'KBaseOntology/4',
+                        'sso': 'KBaseOntology/8',
+                        'peo': 'KBaseOntology/9',
+                        'pto': 'KBaseOntology/10',
+                        'eo': 'KBaseOntology/11',
+                    };
+
                     var $metaTable = $.jqElem('div').kbaseTable({
                         allowNullRows: false,
                         structure: {
@@ -84,8 +102,14 @@ define([
                                 { value: 'comment', label: 'Comment' }
                             ],
                             rows: {
-                                'ontology1': data.ontology1,
-                                'ontology2': data.ontology2,
+                                'ontology1': dict_links[data.ontology1] ? $.jqElem('a')
+                                    .attr('href', '/#dataview/' + dict_links[data.ontology1])
+                                    .attr('target', '_blank')
+                                    .append(data.ontology1) : data.ontology1,
+                                'ontology2': dict_links[data.ontology2] ? $.jqElem('a')
+                                    .attr('href', '/#dataview/' + dict_links[data.ontology2])
+                                    .attr('target', '_blank')
+                                    .append(data.ontology2) : data.ontology2,
                                 'comment': $commentsTable ? $commentsTable.$elem : data.comment
                             }
                         }
@@ -114,27 +138,21 @@ define([
                         }
                     );
 
+                    var equivalent_dictionary = dict_links[data.ontology2];
+
                     var $dt = $self.data('tableElem').DataTable({
                         columns: [
                             { title: 'Term ID', 'class': 'ontology-top' },
-                            { title: 'Eqivalent Name' },
-                            { title: 'Eqivalent Term' }
+                            { title: 'Equivalent Name' },
+                            { title: 'Equivalent Term' }
                         ],
-                        XXXcreatedRow: function(row, data, index) {
+                        createdRow: function(row, data, index) {
 
-                            var $linkCell = $('td', row).eq(0);
+                            var $linkCell = $('td', row).eq(2);
                             $linkCell.empty();
 
-                            $linkCell.append($self.termLink(data[0]));
+                            $linkCell.append($self.termLink(data[2], equivalent_dictionary));
 
-                            var $nameCell = $('td', row).eq(1);
-
-                            var color = $self.colorMap[data[0].namespace];
-                            if (color === undefined) {
-                                color = $self.colorMap[data[0].namespace] = $self.colors.shift();
-                            }
-
-                            $nameCell.css('color', color);
 
                         }
                     });
@@ -158,6 +176,19 @@ define([
 
             return this;
         },
+
+        termLink: function(term_id, dictionary) {
+            var $self = this;
+            if (dictionary != undefined) {
+                return $.jqElem('a')
+                    .attr('target', '_blank')
+                    .attr('href', '/#dataview/' + dictionary + '?term_id=' + term_id)
+                    .append(term_id)
+            } else {
+                return term_id
+            }
+        },
+
         appendUI: function appendUI($elem) {
 
             $elem
@@ -193,7 +224,8 @@ define([
             $globalContainer.append($metaContainerElem);
 
             var $tableElem = $.jqElem('table')
-                .addClass('display');
+                .addClass('display')
+                .css({ 'width': '100%', 'border': '1px solid #ddd' });;
 
             $self.data('tableElem', $tableElem);
             var $colorMapElem = $self.data('colorMapElem', $.jqElem('div'));
