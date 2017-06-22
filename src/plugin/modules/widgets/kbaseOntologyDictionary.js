@@ -5,7 +5,11 @@ define([
     'datatables_bootstrap',
     'kb_widget/legacy/authenticatedWidget',
     'kb_widget/legacy/kbaseTable'
-], function($, colorbrewer, Workspace) {
+], function(
+    $,
+    colorbrewer,
+    Workspace
+) {
     'use strict';
 
     $.KBWidget({
@@ -97,8 +101,8 @@ define([
 
             //$self.ws.get_objects([dictionary_params]).then(function(data) {
             $self.ws.get_object_subset([dictionary_params])
-                .then(function(data) {
-                    var data = data[0].data;
+                .then(function(result) {
+                    var data = result[0].data;
 
                     $self.dataset = data;
 
@@ -633,8 +637,7 @@ define([
             var $loaderElem = $.jqElem('div')
                 .append('<br>&nbsp;Loading data...<br>&nbsp;please wait...<br>&nbsp;Data parsing may take upwards of 30 seconds, during which time this page may be unresponsive.')
                 .append($.jqElem('br'))
-                .append(
-                    $.jqElem('div')
+                .append($.jqElem('div')
                     .attr('align', 'center')
                     .append($.jqElem('i').addClass('fa fa-spinner').addClass('fa fa-spin fa fa-4x'))
                 );
@@ -654,7 +657,8 @@ define([
 
             var $tableElem = $.jqElem('table')
                 .addClass('display')
-                .css({ 'width': '100%', 'border': '1px solid #ddd' });;
+                .addClass('table table-striped')
+                .css({ 'width': '100%', 'border': '1px solid #ddd' });
 
             $self.data('tableElem', $tableElem);
             var $colorMapElem = $self.data('colorMapElem', $.jqElem('div'));
