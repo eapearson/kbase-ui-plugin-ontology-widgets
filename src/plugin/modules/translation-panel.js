@@ -1,14 +1,11 @@
-define([
-    'kb_widget/widgetSet',
-    'kb_common/html',
-    'bootstrap'
-], function(WidgetSet, html) {
+define(['kb_widget/widgetSet', 'kb_common/html', 'bootstrap'], function (WidgetSet, html) {
     'use strict';
 
     function factory(config) {
-        var root, container, runtime = config.runtime,
-            widgetSet = WidgetSet.make({ runtime: runtime }),
-            layout;
+        var root,
+            container,
+            runtime = config.runtime,
+            widgetSet = WidgetSet.make({ runtime: runtime });
 
         // Widget Implementation
 
@@ -18,11 +15,7 @@ define([
                 div = t('div'),
                 p = t('p');
             return div({ class: 'container-fluid' }, [
-                div({ class: 'row' }, [
-                    div({ class: 'col-md-12' }, [
-                        h1('Ontology Translation Demo Page')
-                    ])
-                ]),
+                div({ class: 'row' }, [div({ class: 'col-md-12' }, [h1('Ontology Translation Demo Page')])]),
                 div({ class: 'row' }, [
                     div({ class: 'col-md-3' }, [
                         p('This page demonstrates the ontology translation widget.'),
@@ -33,9 +26,7 @@ define([
             ]);
         }
 
-        layout = render();
-
-
+        const layout = render();
 
         // Widget Interface
 
@@ -86,7 +77,7 @@ define([
     }
 
     return {
-        make: function(config) {
+        make: function (config) {
             return factory(config);
         }
     };

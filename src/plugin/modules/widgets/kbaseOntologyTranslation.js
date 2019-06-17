@@ -5,7 +5,7 @@ define([
     'datatables_bootstrap',
     'kb_widget/legacy/authenticatedWidget',
     'kb_widget/legacy/kbaseTable'
-], function($, colorbrewer, Workspace) {
+], function ($, colorbrewer, Workspace) {
     'use strict';
 
     $.KBWidget({
@@ -19,13 +19,22 @@ define([
         init: function init(options) {
             this._super(options);
 
-            this.wsKey = this.options.wsNameOrId.match(/^\d+/) ?
-                'wsid' :
-                'workspace';
+            const objectIdentity = {};
+            if (this.options.workspaceId) {
+                objectIdentity.wsid = this.options.workspaceId;
+            } else if (this.options.workspaceName) {
+                objectIdentity.workspace = this.options.workspaceName;
+            } else {
+                throw new Error('Workspace id or name required');
+            }
 
-            this.objKey = this.options.objNameOrId.match(/^\d+/) ?
-                'objid' :
-                'name';
+            if (this.options.objectId) {
+                objectIdentity.objid = this.options.objectId;
+            } else if (this.options.objectName) {
+                objectIdentity.name = this.options.objectName;
+            } else {
+                throw new Error('Object id or name required');
+            }
 
             this.colors = colorbrewer.Set2[8];
             this.colorMap = {};
@@ -36,12 +45,8 @@ define([
                 token: this.runtime.service('session').getAuthToken()
             });
 
-            var dictionary_params = {};
-            dictionary_params[this.wsKey] = this.options.wsNameOrId;
-            dictionary_params[this.objKey] = this.options.objNameOrId;
-
-            ws.get_objects([dictionary_params])
-                .then(function(data) {
+            ws.get_objects([objectIdentity])
+                .then(function (data) {
                     data = data[0].data;
 
                     var $metaElem = $self.data('metaElem');
@@ -51,21 +56,18 @@ define([
                     var comments = {};
 
                     var $commentsTable;
-                    data.comment.split(/\n/).forEach(
-                        function(v, i) {
-                            var tmp = v.split(/:/);
-                            if (tmp.length > 2) {
-                                var tail = tmp.slice(1, tmp.length).join(':');
-                                tmp = [tmp[0], tail];
-                            }
-                            if (tmp.length === 2) {
-                                comments[tmp[0]] = tmp[1];
-                            }
+                    data.comment.split(/\n/).forEach(function (v) {
+                        var tmp = v.split(/:/);
+                        if (tmp.length > 2) {
+                            var tail = tmp.slice(1, tmp.length).join(':');
+                            tmp = [tmp[0], tail];
                         }
-                    );
+                        if (tmp.length === 2) {
+                            comments[tmp[0]] = tmp[1];
+                        }
+                    });
 
                     if (Object.keys(comments).length) {
-
                         if (comments['external resource']) {
                             comments['external resource'] = $.jqElem('a')
                                 .attr('href', comments['external resource'])
@@ -83,14 +85,14 @@ define([
                     }
 
                     var dict_links = {
-                        'ncbi': 'KBaseOntology/1',
-                        'po': 'KBaseOntology/2',
-                        'go': 'KBaseOntology/3',
-                        'toy': 'KBaseOntology/4',
-                        'sso': 'KBaseOntology/8',
-                        'peo': 'KBaseOntology/9',
-                        'pto': 'KBaseOntology/10',
-                        'eo': 'KBaseOntology/11',
+                        ncbi: 'KBaseOntology/1',
+                        po: 'KBaseOntology/2',
+                        go: 'KBaseOntology/3',
+                        toy: 'KBaseOntology/4',
+                        sso: 'KBaseOntology/8',
+                        peo: 'KBaseOntology/9',
+                        pto: 'KBaseOntology/10',
+                        eo: 'KBaseOntology/11'
                     };
 
                     var $metaTable = $.jqElem('div').kbaseTable({
@@ -102,15 +104,19 @@ define([
                                 { value: 'comment', label: 'Comment' }
                             ],
                             rows: {
-                                'ontology1': dict_links[data.ontology1] ? $.jqElem('a')
-                                    .attr('href', '/#dataview/' + dict_links[data.ontology1])
-                                    .attr('target', '_blank')
-                                    .append(data.ontology1) : data.ontology1,
-                                'ontology2': dict_links[data.ontology2] ? $.jqElem('a')
-                                    .attr('href', '/#dataview/' + dict_links[data.ontology2])
-                                    .attr('target', '_blank')
-                                    .append(data.ontology2) : data.ontology2,
-                                'comment': $commentsTable ? $commentsTable.$elem : data.comment
+                                ontology1: dict_links[data.ontology1]
+                                    ? $.jqElem('a')
+                                        .attr('href', '/#dataview/' + dict_links[data.ontology1])
+                                        .attr('target', '_blank')
+                                        .append(data.ontology1)
+                                    : data.ontology1,
+                                ontology2: dict_links[data.ontology2]
+                                    ? $.jqElem('a')
+                                        .attr('href', '/#dataview/' + dict_links[data.ontology2])
+                                        .attr('target', '_blank')
+                                        .append(data.ontology2)
+                                    : data.ontology2,
+                                comment: $commentsTable ? $commentsTable.$elem : data.comment
                             }
                         }
                     });
@@ -119,57 +125,37 @@ define([
 
                     var table_data = [];
 
-                    $.each(
-                        Object.keys(data.translation).sort(),
-                        function(i, k) {
-                            var v = data.translation[k];
-                            $.each(
-                                v.equiv_terms,
-                                function(j, e) {
-                                    table_data.push(
-                                        [
-                                            k,
-                                            e.equiv_name,
-                                            e.equiv_term
-                                        ]
-                                    );
-                                }
-                            );
-                        }
-                    );
+                    $.each(Object.keys(data.translation).sort(), function (i, k) {
+                        var v = data.translation[k];
+                        $.each(v.equiv_terms, function (j, e) {
+                            table_data.push([k, e.equiv_name, e.equiv_term]);
+                        });
+                    });
 
                     var equivalent_dictionary = dict_links[data.ontology2];
 
                     var $dt = $self.data('tableElem').DataTable({
                         columns: [
-                            { title: 'Term ID', 'class': 'ontology-top' },
+                            { title: 'Term ID', class: 'ontology-top' },
                             { title: 'Equivalent Name' },
                             { title: 'Equivalent Term' }
                         ],
-                        createdRow: function(row, data, index) {
-
+                        createdRow: function (row, data) {
                             var $linkCell = $('td', row).eq(2);
                             $linkCell.empty();
 
                             $linkCell.append($self.termLink(data[2], equivalent_dictionary));
-
-
                         }
                     });
 
                     $dt.rows.add(table_data).draw();
 
-
                     $self.data('loaderElem').hide();
                     $self.data('globalContainerElem').show();
-
                 })
-                .catch(function(d) {
-
+                .catch(function (d) {
                     $self.$elem.empty();
-                    $self.$elem
-                        .addClass('alert alert-danger')
-                        .html('Could not load object : ' + d.error.message);
+                    $self.$elem.addClass('alert alert-danger').html('Could not load object : ' + d.error.message);
                 });
 
             this.appendUI(this.$elem);
@@ -177,37 +163,40 @@ define([
             return this;
         },
 
-        termLink: function(term_id, dictionary) {
-            var $self = this;
+        termLink: function (term_id, dictionary) {
             if (dictionary != undefined) {
                 return $.jqElem('a')
                     .attr('target', '_blank')
                     .attr('href', '/#dataview/' + dictionary + '?term_id=' + term_id)
-                    .append(term_id)
+                    .append(term_id);
             } else {
-                return term_id
+                return term_id;
             }
         },
 
         appendUI: function appendUI($elem) {
-
-            $elem
-                .css({
-                    'width': '95%',
-                    'padding-left': '10px'
-                });
+            $elem.css({
+                width: '95%',
+                'padding-left': '10px'
+            });
 
             $elem.append($.jqElem('style').text('.ontology-top { vertical-align : top }'));
 
             var $self = this;
 
             var $loaderElem = $.jqElem('div')
-                .append('<br>&nbsp;Loading data...<br>&nbsp;please wait...<br>&nbsp;Data parsing may take upwards of 30 seconds, during which time this page may be unresponsive.')
+                .append(
+                    '<br>&nbsp;Loading data...<br>&nbsp;please wait...<br>&nbsp;Data parsing may take upwards of 30 seconds, during which time this page may be unresponsive.'
+                )
                 .append($.jqElem('br'))
                 .append(
                     $.jqElem('div')
-                    .attr('align', 'center')
-                    .append($.jqElem('i').addClass('fa fa-spinner').addClass('fa fa-spin fa fa-4x'))
+                        .attr('align', 'center')
+                        .append(
+                            $.jqElem('i')
+                                .addClass('fa fa-spinner')
+                                .addClass('fa fa-spin fa fa-4x')
+                        )
                 );
 
             $self.data('loaderElem', $loaderElem);
@@ -225,60 +214,53 @@ define([
 
             var $tableElem = $.jqElem('table')
                 .addClass('display')
-                .css({ 'width': '100%', 'border': '1px solid #ddd' });;
+                .css({ width: '100%', border: '1px solid #ddd' });
 
             $self.data('tableElem', $tableElem);
-            var $colorMapElem = $self.data('colorMapElem', $.jqElem('div'));
+            $self.data('colorMapElem', $.jqElem('div'));
 
             var $containerElem = $self.createContainerElem('Translation Dictionary', [$tableElem]);
 
             $self.data('containerElem', $containerElem);
             $globalContainer.append($containerElem);
 
-
             return $elem;
-
         },
-        createContainerElem: function(name, content, display) {
+        createContainerElem: function (name, content, display) {
+            var $panelBody = $.jqElem('div').addClass('panel-body collapse in');
 
-            var $panelBody = $.jqElem('div')
-                .addClass('panel-body collapse in');
-
-            $.each(
-                content,
-                function(i, v) {
-                    $panelBody.append(v);
-                }
-            );
+            $.each(content, function (i, v) {
+                $panelBody.append(v);
+            });
 
             var $containerElem = $.jqElem('div')
                 .addClass('panel panel-default')
                 .css('display', display)
                 .append(
                     $.jqElem('div')
-                    .addClass('panel-heading')
-                    .on('click', function(e) {
-                        $(this).next().collapse('toggle');
-                        $(this).find('i').toggleClass('fa-rotate-90');
-
-                    })
-                    .append(
-                        $.jqElem('div')
-                        .addClass('panel-title')
+                        .addClass('panel-heading')
+                        .on('click', function () {
+                            $(this)
+                                .next()
+                                .collapse('toggle');
+                            $(this)
+                                .find('i')
+                                .toggleClass('fa-rotate-90');
+                        })
                         .append(
-                            $.jqElem('i')
-                            .addClass('fa fa-chevron-right fa-rotate-90')
-                            .css('color', 'lightgray')
+                            $.jqElem('div')
+                                .addClass('panel-title')
+                                .append(
+                                    $.jqElem('i')
+                                        .addClass('fa fa-chevron-right fa-rotate-90')
+                                        .css('color', 'lightgray')
+                                )
+                                .append('&nbsp; ' + name)
                         )
-                        .append('&nbsp; ' + name)
-                    )
                 )
-                .append(
-                    $panelBody
-                );
+                .append($panelBody);
 
             return $containerElem;
         }
     });
-
 });
